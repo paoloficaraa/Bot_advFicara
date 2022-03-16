@@ -61,12 +61,17 @@ public class MyFile {
         }
     }
 
-    public void riscriviFile(List<String> strings) {
+    public void riscriviFile(List<String[]> strings) {
         clear();
         try {
             FileWriter fw = new FileWriter(filename, true);
-            for(String x : strings)
-                fw.append(x + '\n');
+            for(String[] x : strings){
+                for(String s : x){
+                    fw.append(s);
+                }
+                fw.append("\n");
+            }
+                
             fw.close();
         } catch (IOException ex) {
             Logger.getLogger(MyFile.class.getName()).log(Level.SEVERE, null, ex);

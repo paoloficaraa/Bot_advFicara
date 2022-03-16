@@ -71,8 +71,21 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             } else if (position(update.getMessage().getChat().getUserName(), file.leggi()) > 0){
                 List<String[]> strings = file.leggi();
-                String[] array;
+                String lat = "";
+                String lon = "";
+                try {
+                    lat = getCity(command.split(" - ")[1]).split(";")[0];
+                    lon = getCity(command.split(" - ")[1]).split(";")[1];
+                } catch (IOException ex) {
+                    Logger.getLogger(TelegramBot.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParserConfigurationException ex) {
+                    Logger.getLogger(TelegramBot.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SAXException ex) {
+                    Logger.getLogger(TelegramBot.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                String[] array = { update.getMessage().getChat().getUserName(), lat, lon};
                 strings.set(position(update.getMessage().getChat().getUserName(), file.leggi()), array);
+                file.riscriviFile(strings);
             }
             message.setText("Datas saved");
         } else {
