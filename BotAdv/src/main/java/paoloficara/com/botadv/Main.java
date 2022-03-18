@@ -14,14 +14,17 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  * @author paolo
  */
 public class Main {
-    
+
     public static void main(String[] args) throws TelegramApiException {
+        TelegramBot bot = new TelegramBot();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         try {
-            telegramBotsApi.registerBot(new TelegramBot());
+            telegramBotsApi.registerBot(bot);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+        Window window = new Window(bot);
+        window.show();
     }
-    
+
 }
