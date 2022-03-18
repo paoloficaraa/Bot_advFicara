@@ -66,12 +66,13 @@ public class MyFile {
         try {
             FileWriter fw = new FileWriter(filename, true);
             for(String[] x : strings){
-                for(String s : x){
-                    fw.append(s);
+                for(int i = 0;i < x.length;i++){
+                    if(i != x.length - 1)
+                        fw.append(x[i] + ";");
+                    else
+                        fw.append(x[i] + "\n");
                 }
-                fw.append("\n");
             }
-                
             fw.close();
         } catch (IOException ex) {
             Logger.getLogger(MyFile.class.getName()).log(Level.SEVERE, null, ex);

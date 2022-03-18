@@ -69,13 +69,15 @@ public class TelegramBot extends TelegramLongPollingBot {
                         Logger.getLogger(TelegramBot.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            } else if (position(update.getMessage().getChat().getUserName(), file.leggi()) > 0){
+            } else if (position(update.getMessage().getChat().getUserName(), file.leggi()) != -1){
                 List<String[]> strings = file.leggi();
                 String lat = "";
                 String lon = "";
+                String name = "";
                 try {
-                    lat = getCity(command.split(" - ")[1]).split(";")[0];
-                    lon = getCity(command.split(" - ")[1]).split(";")[1];
+                    name = getCity(command.split(" - ")[1]).split(";")[0];
+                    lat = getCity(command.split(" - ")[1]).split(";")[1];
+                    lon = getCity(command.split(" - ")[1]).split(";")[2];
                 } catch (IOException ex) {
                     Logger.getLogger(TelegramBot.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ParserConfigurationException ex) {
@@ -83,7 +85,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 } catch (SAXException ex) {
                     Logger.getLogger(TelegramBot.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                String[] array = { update.getMessage().getChat().getUserName(), lat, lon};
+                String[] array = { update.getMessage().getChat().getUserName(), name, lat, lon};
                 strings.set(position(update.getMessage().getChat().getUserName(), file.leggi()), array);
                 file.riscriviFile(strings);
             }
@@ -110,20 +112,21 @@ public class TelegramBot extends TelegramLongPollingBot {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document d;
-        String latitude = "", longitude = "";
+        String latitude = "", longitude = "", name = "";
         try {
             d = builder.parse("https://nominatim.openstreetmap.org/search?q=" + URLEncoder.encode(city, StandardCharsets.UTF_8) + "&format=xml&addressdetails=1");
             Element root = d.getDocumentElement();
             NodeList places = root.getElementsByTagName("place");
             Element e = (Element) places.item(0);
             if (e.getElementsByTagName("city").getLength() > 0 || e.getElementsByTagName("town").getLength() > 0 || e.getElementsByTagName("village").getLength() > 0) {
+                name = e.getAttribute("display_name");
                 latitude = e.getAttribute("lat");
                 longitude = e.getAttribute("lon");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return latitude + ";" + longitude;
+        return name + ";" + latitude + ";" + longitude;
     }
 
     private Boolean isThere(String username, List<String[]> strings) {
