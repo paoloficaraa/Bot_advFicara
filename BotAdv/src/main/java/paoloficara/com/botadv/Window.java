@@ -26,6 +26,7 @@ import org.xml.sax.SAXException;
 public class Window extends javax.swing.JFrame {
 
     private TelegramBot bot;
+
     /**
      * Creates new form Window
      */
@@ -85,21 +86,11 @@ public class Window extends javax.swing.JFrame {
         jLabel4.setText("Raggio[km]");
 
         jTextField2.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         jLabel5.setText("Città");
 
         jTextField3.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -181,9 +172,11 @@ public class Window extends javax.swing.JFrame {
         // TODO add your handling code here:
         MyFile file = new MyFile("user;chatId;cityName;latitude;longitude.txt");
         List<String[]> strings = file.leggi();
-        for(String[] array : strings){
+        for (String[] array : strings) {
             try {
-                if(Integer.parseInt(array[3]) <= (Integer.parseInt(getCity(jTextField3.getText()).split(";")[1]) + Integer.parseInt(jTextField2.getText())) && Integer.parseInt(array[4]) <= (Integer.parseInt(getCity(jTextField3.getText()).split(";")[2]) + Integer.parseInt(jTextField2.getText())) ){
+                Double lat = Double.parseDouble(getCity(array[2]).split(";")[1]);
+                Double lon = Double.parseDouble(getCity(array[2]).split(";")[2]);
+                if (getDistance(jTextField3.getText(), lat, lon) <= Double.parseDouble(jTextField2.getText())) {
                     bot.sendAd(array[1], jTextField1.getText() + "\n" + jTextArea1.getText());
                 }
             } catch (IOException ex) {
@@ -219,14 +212,29 @@ public class Window extends javax.swing.JFrame {
         }
         return name + ";" + latitude + ";" + longitude;
     }
-    
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    private Double getDistance(String citta, Double latitudine, Double longitudine) throws ParserConfigurationException, SAXException, IOException {
+
+        Double R = 6371.0088;
+
+        Double lat = Double.parseDouble(getCity(citta).split(";")[1]); 
+        Double lon = Double.parseDouble(getCity(citta).split(";")[2]);
+
+        Double latDistance = Math.toRadians((latitudine - lat));
+        Double lonDistance = Math.toRadians((longitudine - lon));
+        
+        lat = Math.toRadians(lat);
+        latitudine = Math.toRadians(latitudine);
+        
+        Double a = haversin(latDistance) + Math.cos(lat) * Math.cos(latitudine) * haversin(lonDistance);
+        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        
+        return Math.abs(R * c);
+    }
+
+    private static double haversin(Double val) {
+        return Math.pow(Math.sin(val / 2), 2);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

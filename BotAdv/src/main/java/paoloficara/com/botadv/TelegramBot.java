@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import static org.glassfish.hk2.utilities.reflection.Pretty.array;
+import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -53,7 +54,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             String city = command.substring(command.indexOf(" ") + 1);
 
             SendMessage message = new SendMessage();
-
+            SendLocation location = new SendLocation();
+            
             if (command.equals("/username")) {
                 message.setText(getBotUsername());
             } else if (command.split(" ")[0].equals("/city")) {
@@ -98,7 +100,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                             strings.set(position(update.getMessage().getChat().getUserName(), file.leggi()), array);
                             file.riscriviFile(strings);
                         }
-                        message.setText("Datas saved");
+                        //message.setText("Datas saved");
+                        location.setLatitude(Double.parseDouble(getCity(city).split(";")[1]));
+                        location.setLongitude(Double.parseDouble(getCity(city).split(";")[2]));
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(TelegramBot.class.getName()).log(Level.SEVERE, null, ex);
@@ -110,9 +114,14 @@ public class TelegramBot extends TelegramLongPollingBot {
             } else {
                 message.setText("Invalid command");
             }
-            message.setChatId(update.getMessage().getChatId().toString());
+            
             try {
-                execute(message);
+                if(message.getText() != null){
+                    message.setChatId(update.getMessage().getChatId().toString());
+                    execute(message);
+                }
+                location.setChatId(update.getMessage().getChatId().toString());
+                execute(location);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
