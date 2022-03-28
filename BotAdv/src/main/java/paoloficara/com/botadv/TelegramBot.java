@@ -44,28 +44,32 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     @SuppressWarnings("empty-statement")
     public void onUpdateReceived(Update update) {
+//        String message = update.getMessage().getText();
+//        int pos = message.indexOf(" ");
+//        System.out.println(message.substring(pos + 1));
         if (update.hasMessage() && update.getMessage().hasText()) {
 
             String command = update.getMessage().getText();
+            String city = command.substring(command.indexOf(" ") + 1);
 
             SendMessage message = new SendMessage();
 
             if (command.equals("/username")) {
                 message.setText(getBotUsername());
-            } else if (command.split(" - ")[0].equals("/city")) {
+            } else if (command.split(" ")[0].equals("/city")) {
                 try {
-                    if (getCity(command.split(" - ")[1]).equals("")) {
+                    if (getCity(city).equals("")) {
                         message.setText("City not found");
                     } else {
                         //System.out.println(command.split(" - ")[0] + " " + command.split(" - ")[1]);
-                        MyFile file = new MyFile("user;cityName;latitude;longitude.txt");
+                        MyFile file = new MyFile("user;chatId;cityName;latitude;longitude.txt");
                         if (!isThere(update.getMessage().getChat().getUserName(), file.leggi())) {
                             if (update.getMessage().getLocation() != null) {
                                 //System.out.println(update.getMessage().getLocation().getLatitude() + " " + update.getMessage().getLocation().getLongitude());
                                 file.scrivi(update.getMessage().getChat().getUserName() + ";" + update.getMessage().getChatId() + ";" + update.getMessage().getLocation().getLatitude() + ";" + update.getMessage().getLocation().getLongitude());
                             } else {
                                 try {
-                                    file.scrivi(update.getMessage().getChat().getUserName() + ";" + update.getMessage().getChatId() + ";" + getCity(command.split(" - ")[1]));
+                                    file.scrivi(update.getMessage().getChat().getUserName() + ";" + update.getMessage().getChatId() + ";" + getCity(city));
                                 } catch (IOException ex) {
                                     Logger.getLogger(TelegramBot.class.getName()).log(Level.SEVERE, null, ex);
                                 } catch (ParserConfigurationException ex) {
@@ -80,9 +84,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                             String lon = "";
                             String name = "";
                             try {
-                                name = getCity(command.split(" - ")[1]).split(";")[0];
-                                lat = getCity(command.split(" - ")[1]).split(";")[1];
-                                lon = getCity(command.split(" - ")[1]).split(";")[2];
+                                name = getCity(city).split(";")[0];
+                                lat = getCity(city).split(";")[1];
+                                lon = getCity(city).split(";")[2];
                             } catch (IOException ex) {
                                 Logger.getLogger(TelegramBot.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (ParserConfigurationException ex) {

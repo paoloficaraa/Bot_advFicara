@@ -179,7 +179,7 @@ public class Window extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        MyFile file = new MyFile("user;cityName;latitude;longitude.txt");
+        MyFile file = new MyFile("user;chatId;cityName;latitude;longitude.txt");
         List<String[]> strings = file.leggi();
         for(String[] array : strings){
             try {
