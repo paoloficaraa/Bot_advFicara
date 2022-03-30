@@ -177,7 +177,7 @@ public class Window extends javax.swing.JFrame {
                 Double lat = Double.parseDouble(getCity(array[2]).split(";")[1]);
                 Double lon = Double.parseDouble(getCity(array[2]).split(";")[2]);
                 if (getDistance(jTextField3.getText(), lat, lon) <= Double.parseDouble(jTextField2.getText())) {
-                    bot.sendAd(array[1], jTextField1.getText() + "\n" + jTextArea1.getText());
+                    bot.sendAd(array[1],"Pubblicità: \n" + jTextField1.getText() + "\n" + jTextArea1.getText());
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);

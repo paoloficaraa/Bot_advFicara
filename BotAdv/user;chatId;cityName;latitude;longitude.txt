@@ -1,2 +1,2 @@
-pablo_da_sosa;5221420437;Asso, Como, Lombardia, 22033, Italia;45.86721875;9.267313440556514
+pablo_da_sosa;5221420437;Mendrisio, Circolo di Mendrisio, Distretto di Mendrisio, Ticino, 6850, Schweiz/Suisse/Svizzera/Svizra;45.8709661;8.9875293
 Payd3r;589886909;Tombouctou, Cercle de Tombouctou, Tombouctou, Mali;16.7719091;-3.0087272

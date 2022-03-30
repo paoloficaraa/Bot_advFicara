@@ -55,7 +55,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             SendMessage message = new SendMessage();
             SendLocation location = new SendLocation();
-            
+
             if (command.equals("/username")) {
                 message.setText(getBotUsername());
             } else if (command.split(" ")[0].equals("/city")) {
@@ -114,14 +114,16 @@ public class TelegramBot extends TelegramLongPollingBot {
             } else {
                 message.setText("Invalid command");
             }
-            
+
             try {
-                if(message.getText() != null){
+                if (message.getText() != null) {
                     message.setChatId(update.getMessage().getChatId().toString());
                     execute(message);
                 }
-                location.setChatId(update.getMessage().getChatId().toString());
-                execute(location);
+                if (location.getLatitude() != null && location.getLongitude() != null) {
+                    location.setChatId(update.getMessage().getChatId().toString());
+                    execute(location);
+                }
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
